@@ -17,6 +17,7 @@
             "group": "Getting Started",
             "pages": [
               "index",
+              "vision",
               "user-guide/getting-started",
               "user-guide/funding-wallet",
               "user-guide/using-chat"
