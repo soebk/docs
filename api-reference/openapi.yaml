@@ -1,0 +1,646 @@
+openapi: 3.0.0
+info:
+  title: Chat402 API
+  version: 1.0.0
+  description: |
+    The first LLM API gateway built for x402 protocol. Pay-per-prompt with USDC on Base or Solana.
+
+    ## Authentication
+    All API requests require an API key in the Authorization header:
+    ```
+    Authorization: Bearer YOUR_API_KEY
+    ```
+
+    ## Payment Protocol
+    Chat402 uses the x402 payment protocol. Each request requires payment authorization signed by your wallet.
+
+    ## Base URL
+    ```
+    https://api.chat402.xyz/api/v1
+    ```
+
+  contact:
+    name: Chat402 Support
+    url: https://www.chat402.xyz
+    email: support@chat402.xyz
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.chat402.xyz/api/v1
+    description: Production server
+  - url: http://localhost:3000/api/v1
+    description: Local development
+
+tags:
+  - name: Prompts
+    description: Submit prompts to AI models
+  - name: API Keys
+    description: Manage API keys and custodial wallets
+  - name: Health
+    description: Service health checks
+
+paths:
+  /prompt:
+    post:
+      tags:
+        - Prompts
+      summary: Submit a prompt to an AI model
+      description: |
+        Send a prompt to any supported AI model. Supports text and image inputs.
+        Payment is required via x402 protocol.
+      operationId: submitPrompt
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptRequest'
+            examples:
+              simpleText:
+                summary: Simple text prompt
+                value:
+                  model: gpt-3.5-turbo
+                  prompt: "Explain quantum computing in simple terms"
+              withImage:
+                summary: Prompt with image
+                value:
+                  model: gpt-4-vision-preview
+                  prompt: "What's in this image?"
+                  image: "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+              claudeSonnet:
+                summary: Claude Sonnet 4.5
+                value:
+                  model: claude-sonnet-4-5-20250929
+                  prompt: "Write a haiku about blockchain"
+              withPayment:
+                summary: With payment proof
+                value:
+                  model: gpt-4
+                  prompt: "Explain smart contracts"
+                  payment:
+                    from: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                    amount: 1000
+                    signature: "0x123..."
+                    timestamp: 1698765432000
+                    requestId: "req_abc123"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+              examples:
+                success:
+                  summary: Successful prompt response
+                  value:
+                    success: true
+                    text: "Quantum computing uses quantum mechanics principles..."
+                    model: gpt-3.5-turbo
+                    usage:
+                      inputTokens: 12
+                      outputTokens: 45
+                      totalTokens: 57
+                    cost:
+                      inputCost: 0.000006
+                      outputCost: 0.0000225
+                      totalCost: 0.0000285
+                    requestId: "req_abc123"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/PaymentRequired'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /keys:
+    post:
+      tags:
+        - API Keys
+      summary: Create a new API key
+      description: |
+        Generate a new API key with a custodial wallet on Ethereum (Base) or Solana.
+        Each API key has its own dedicated wallet for gas-free transactions.
+      operationId: createApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateKeyRequest'
+            examples:
+              ethereum:
+                summary: Ethereum (Base) wallet
+                value:
+                  name: "Production API Key"
+                  network: ethereum
+                  ownerAddress: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+              solana:
+                summary: Solana wallet
+                value:
+                  name: "Solana API Key"
+                  network: solana
+                  ownerAddress: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"
+      responses:
+        '201':
+          description: API key created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    get:
+      tags:
+        - API Keys
+      summary: List all API keys
+      description: Get all API keys (with masked key values)
+      operationId: listApiKeys
+      responses:
+        '200':
+          description: List of API keys
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  keys:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MaskedApiKey'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /keys/{key}/balance:
+    get:
+      tags:
+        - API Keys
+      summary: Check API key balance
+      description: Get the current USDC balance of an API key's custodial wallet
+      operationId: getKeyBalance
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+            example: pp_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+      responses:
+        '200':
+          description: Balance retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /keys/{key}:
+    delete:
+      tags:
+        - API Keys
+      summary: Revoke an API key
+      description: Permanently revoke an API key (cannot be undone)
+      operationId: revokeApiKey
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Key revoked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "API key revoked successfully"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /keys/export:
+    post:
+      tags:
+        - API Keys
+      summary: Export private keys
+      description: |
+        Export private keys for custodial wallets. Requires signature verification
+        to prove wallet ownership.
+      operationId: exportPrivateKeys
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportKeysRequest'
+      responses:
+        '200':
+          description: Private keys exported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportKeysResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Check if the API is running
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+      description: API key starting with 'pp_'
+
+  schemas:
+    PromptRequest:
+      type: object
+      required:
+        - model
+        - prompt
+      properties:
+        model:
+          type: string
+          description: AI model to use
+          enum:
+            - gpt-3.5-turbo
+            - gpt-4
+            - gpt-4-turbo
+            - gpt-4-vision-preview
+            - claude-sonnet-4-5-20250929
+            - claude-3-opus-20240229
+            - gemini-2.5-flash
+            - gemini-pro
+            - grok-1
+            - deepseek-chat
+          example: gpt-3.5-turbo
+        prompt:
+          type: string
+          description: The user's prompt/question
+          example: "Explain how blockchain works"
+        image:
+          type: string
+          description: Base64-encoded image (for vision models)
+          example: "data:image/jpeg;base64,/9j/4AAQ..."
+        payment:
+          $ref: '#/components/schemas/PaymentProof'
+
+    PaymentProof:
+      type: object
+      required:
+        - from
+        - amount
+        - signature
+        - timestamp
+        - requestId
+      properties:
+        from:
+          type: string
+          description: Payer's wallet address
+          example: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        amount:
+          type: number
+          description: Payment amount in USDC cents
+          example: 1000
+        signature:
+          type: string
+          description: Cryptographic signature of payment
+          example: "0x1234567890abcdef..."
+        timestamp:
+          type: number
+          description: Unix timestamp in milliseconds
+          example: 1698765432000
+        requestId:
+          type: string
+          description: Unique request identifier
+          example: "req_abc123xyz"
+        network:
+          type: string
+          enum: [ethereum, solana]
+          description: Payment network
+          example: ethereum
+
+    PromptResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        text:
+          type: string
+          description: AI model's response
+          example: "Blockchain is a distributed ledger technology..."
+        model:
+          type: string
+          example: gpt-3.5-turbo
+        usage:
+          $ref: '#/components/schemas/TokenUsage'
+        cost:
+          $ref: '#/components/schemas/CostBreakdown'
+        requestId:
+          type: string
+          example: "req_abc123xyz"
+
+    TokenUsage:
+      type: object
+      properties:
+        inputTokens:
+          type: integer
+          example: 12
+        outputTokens:
+          type: integer
+          example: 45
+        totalTokens:
+          type: integer
+          example: 57
+
+    CostBreakdown:
+      type: object
+      properties:
+        inputCost:
+          type: number
+          format: float
+          example: 0.000006
+        outputCost:
+          type: number
+          format: float
+          example: 0.0000225
+        totalCost:
+          type: number
+          format: float
+          example: 0.0000285
+
+    CreateKeyRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Friendly name for the API key
+          example: "Production API Key"
+        network:
+          type: string
+          enum: [ethereum, solana]
+          description: Blockchain network
+          default: ethereum
+          example: ethereum
+        ownerAddress:
+          type: string
+          description: Wallet address of the owner
+          example: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+
+    ApiKeyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        apiKey:
+          type: object
+          properties:
+            key:
+              type: string
+              example: "pp_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            name:
+              type: string
+              example: "Production API Key"
+            wallet:
+              type: object
+              properties:
+                address:
+                  type: string
+                  example: "0x1234567890123456789012345678901234567890"
+                network:
+                  type: string
+                  example: ethereum
+            balance:
+              type: number
+              example: 0
+            createdAt:
+              type: string
+              format: date-time
+        message:
+          type: string
+          example: "API key created successfully. Save this key - it will not be shown again!"
+
+    MaskedApiKey:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Production API Key"
+        key:
+          type: string
+          example: "pp_12345678****************************************90abcdef"
+        wallet:
+          type: object
+          properties:
+            address:
+              type: string
+            network:
+              type: string
+        balance:
+          type: number
+        usage:
+          type: object
+          properties:
+            totalRequests:
+              type: integer
+            totalCost:
+              type: number
+            lastUsed:
+              type: string
+              format: date-time
+              nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    BalanceResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        balance:
+          type: number
+          description: Balance in USDC
+          example: 10.50
+        wallet:
+          type: object
+          properties:
+            address:
+              type: string
+              example: "0x1234567890123456789012345678901234567890"
+            network:
+              type: string
+              example: ethereum
+
+    ExportKeysRequest:
+      type: object
+      required:
+        - address
+        - signature
+        - message
+      properties:
+        address:
+          type: string
+          description: Wallet address
+          example: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        signature:
+          type: string
+          description: Signed message proving ownership
+          example: "0x1234567890abcdef..."
+        message:
+          type: string
+          description: Message that was signed
+          example: "Export private keys for Chat402\nWallet: 0x742d...\nTimestamp: 1698765432000"
+
+    ExportKeysResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        ethKey:
+          type: object
+          properties:
+            address:
+              type: string
+              example: "0x1234567890123456789012345678901234567890"
+            privateKey:
+              type: string
+              example: "0xabcdef1234567890..."
+            network:
+              type: string
+              example: ethereum
+        solKey:
+          type: object
+          properties:
+            address:
+              type: string
+              example: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"
+            privateKey:
+              type: string
+              example: "base58encodedkey..."
+            network:
+              type: string
+              example: solana
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Invalid API key"
+        code:
+          type: string
+          description: Error code
+          example: "INVALID_API_KEY"
+        details:
+          type: object
+          description: Additional error details
+          additionalProperties: true
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Invalid model specified"
+            code: "INVALID_MODEL"
+
+    Unauthorized:
+      description: Unauthorized - invalid or missing API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Invalid API key"
+            code: "INVALID_API_KEY"
+
+    PaymentRequired:
+      description: Payment required - insufficient balance or invalid payment
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Insufficient balance: has $0.50, needs $1.00"
+            code: "INSUFFICIENT_BALANCE"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "API key not found"
+            code: "NOT_FOUND"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "An unexpected error occurred"
+            code: "INTERNAL_ERROR"

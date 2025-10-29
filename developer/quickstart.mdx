@@ -1,0 +1,548 @@
+# Chat402 Integration Guide
+
+Complete guide to integrating Chat402 into your application.
+
+## Table of Contents
+- [Quick Start](#quick-start)
+- [Authentication](#authentication)
+- [Making Your First Request](#making-your-first-request)
+- [Payment Integration](#payment-integration)
+- [Code Examples](#code-examples)
+- [Error Handling](#error-handling)
+- [Best Practices](#best-practices)
+
+## Quick Start
+
+### 1. Get an API Key
+
+Visit [chat402.xyz](https://www.chat402.xyz) and:
+1. Connect your wallet (MetaMask or Phantom)
+2. Custodial wallets are auto-created for you
+3. Navigate to API Keys page
+4. Generate a new API key (starts with `pp_`)
+5. **Save it immediately** - it won't be shown again!
+
+### 2. Fund Your Wallet
+
+Send USDC to your custodial wallet address:
+- **Ethereum**: Send USDC on Base network
+- **Solana**: Send USDC on Solana mainnet
+
+Minimum deposit: $1 USDC
+
+### 3. Make Your First Request
+
+```bash
+curl -X POST https://api.chat402.xyz/api/v1/prompt \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-3.5-turbo",
+    "prompt": "Explain blockchain in simple terms"
+  }'
+```
+
+## Authentication
+
+All API requests require an API key in the Authorization header:
+
+```
+Authorization: Bearer pp_1234567890abcdef...
+```
+
+## Making Your First Request
+
+### Basic Text Prompt
+
+```javascript
+const response = await fetch('https://api.chat402.xyz/api/v1/prompt', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-3.5-turbo',
+    prompt: 'What is the capital of France?'
+  })
+});
+
+const data = await response.json();
+console.log(data.text); // "The capital of France is Paris."
+```
+
+### Response Format
+
+```json
+{
+  "success": true,
+  "text": "The capital of France is Paris.",
+  "model": "gpt-3.5-turbo",
+  "usage": {
+    "inputTokens": 8,
+    "outputTokens": 7,
+    "totalTokens": 15
+  },
+  "cost": {
+    "inputCost": 0.000004,
+    "outputCost": 0.0000035,
+    "totalCost": 0.0000075
+  },
+  "requestId": "req_abc123"
+}
+```
+
+## Payment Integration
+
+### Using Custodial Wallets (Recommended)
+
+The simplest way - just use your API key:
+
+```javascript
+// No payment proof needed - deducted from your API key's wallet
+const response = await fetch('https://api.chat402.xyz/api/v1/prompt', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-4',
+    prompt: 'Write a haiku about AI'
+  })
+});
+```
+
+### Using Your Own Wallet (Advanced)
+
+For direct wallet-to-wallet payments with x402 protocol:
+
+```javascript
+import { ethers } from 'ethers';
+
+// 1. Create payment proof
+const signer = new ethers.Wallet(privateKey);
+const requestId = `req_${Date.now()}`;
+const amount = 1000; // 1000 cents = $10 USDC
+const timestamp = Date.now();
+
+const message = `PromptPort Payment\nRequest ID: ${requestId}\nAmount: ${amount} USDC cents\nTimestamp: ${timestamp}`;
+const signature = await signer.signMessage(message);
+
+// 2. Submit with payment proof
+const response = await fetch('https://api.chat402.xyz/api/v1/prompt', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-4',
+    prompt: 'Explain quantum computing',
+    payment: {
+      from: await signer.getAddress(),
+      amount: amount,
+      signature: signature,
+      timestamp: timestamp,
+      requestId: requestId,
+      network: 'ethereum'
+    }
+  })
+});
+```
+
+## Code Examples
+
+### Node.js / TypeScript
+
+```typescript
+import axios from 'axios';
+
+const API_KEY = process.env.CHAT402_API_KEY;
+const API_URL = 'https://api.chat402.xyz/api/v1';
+
+async function chat(prompt: string, model = 'gpt-3.5-turbo') {
+  try {
+    const response = await axios.post(
+      `${API_URL}/prompt`,
+      {
+        model,
+        prompt
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    return {
+      text: response.data.text,
+      cost: response.data.cost.totalCost,
+      tokens: response.data.usage.totalTokens
+    };
+  } catch (error) {
+    if (error.response?.status === 402) {
+      throw new Error('Insufficient balance - please top up your wallet');
+    }
+    throw error;
+  }
+}
+
+// Usage
+const result = await chat('What is Bitcoin?');
+console.log(result.text);
+console.log(`Cost: $${result.cost.toFixed(6)}`);
+```
+
+### Python
+
+```python
+import requests
+import os
+
+API_KEY = os.getenv('CHAT402_API_KEY')
+API_URL = 'https://api.chat402.xyz/api/v1'
+
+def chat(prompt: str, model: str = 'gpt-3.5-turbo'):
+    response = requests.post(
+        f'{API_URL}/prompt',
+        headers={
+            'Authorization': f'Bearer {API_KEY}',
+            'Content-Type': 'application/json'
+        },
+        json={
+            'model': model,
+            'prompt': prompt
+        }
+    )
+
+    if response.status_code == 402:
+        raise Exception('Insufficient balance - please top up your wallet')
+
+    response.raise_for_status()
+    data = response.json()
+
+    return {
+        'text': data['text'],
+        'cost': data['cost']['totalCost'],
+        'tokens': data['usage']['totalTokens']
+    }
+
+# Usage
+result = chat('Explain machine learning')
+print(result['text'])
+print(f"Cost: ${result['cost']:.6f}")
+```
+
+### cURL
+
+```bash
+#!/bin/bash
+
+API_KEY="your_api_key_here"
+API_URL="https://api.chat402.xyz/api/v1"
+
+curl -X POST "$API_URL/prompt" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-3.5-turbo",
+    "prompt": "What is the meaning of life?"
+  }' | jq '.text'
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "net/http"
+    "os"
+)
+
+type PromptRequest struct {
+    Model  string `json:"model"`
+    Prompt string `json:"prompt"`
+}
+
+type PromptResponse struct {
+    Success bool   `json:"success"`
+    Text    string `json:"text"`
+    Model   string `json:"model"`
+    Usage   struct {
+        TotalTokens int `json:"totalTokens"`
+    } `json:"usage"`
+    Cost struct {
+        TotalCost float64 `json:"totalCost"`
+    } `json:"cost"`
+}
+
+func chat(prompt string, model string) (*PromptResponse, error) {
+    apiKey := os.Getenv("CHAT402_API_KEY")
+    apiURL := "https://api.chat402.xyz/api/v1"
+
+    reqBody := PromptRequest{
+        Model:  model,
+        Prompt: prompt,
+    }
+
+    jsonData, err := json.Marshal(reqBody)
+    if err != nil {
+        return nil, err
+    }
+
+    req, err := http.NewRequest("POST", apiURL+"/prompt", bytes.NewBuffer(jsonData))
+    if err != nil {
+        return nil, err
+    }
+
+    req.Header.Set("Authorization", "Bearer "+apiKey)
+    req.Header.Set("Content-Type", "application/json")
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode == 402 {
+        return nil, fmt.Errorf("insufficient balance - please top up your wallet")
+    }
+
+    var result PromptResponse
+    if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+        return nil, err
+    }
+
+    return &result, nil
+}
+
+func main() {
+    result, err := chat("What is Ethereum?", "gpt-3.5-turbo")
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println(result.Text)
+    fmt.Printf("Cost: $%.6f\n", result.Cost.TotalCost)
+}
+```
+
+### Rust
+
+```rust
+use reqwest;
+use serde::{Deserialize, Serialize};
+use std::env;
+
+#[derive(Serialize)]
+struct PromptRequest {
+    model: String,
+    prompt: String,
+}
+
+#[derive(Deserialize)]
+struct PromptResponse {
+    success: bool,
+    text: String,
+    usage: TokenUsage,
+    cost: CostBreakdown,
+}
+
+#[derive(Deserialize)]
+struct TokenUsage {
+    #[serde(rename = "totalTokens")]
+    total_tokens: i32,
+}
+
+#[derive(Deserialize)]
+struct CostBreakdown {
+    #[serde(rename = "totalCost")]
+    total_cost: f64,
+}
+
+async fn chat(prompt: &str, model: &str) -> Result<PromptResponse, Box<dyn std::error::Error>> {
+    let api_key = env::var("CHAT402_API_KEY")?;
+    let api_url = "https://api.chat402.xyz/api/v1";
+
+    let client = reqwest::Client::new();
+    let response = client
+        .post(format!("{}/prompt", api_url))
+        .header("Authorization", format!("Bearer {}", api_key))
+        .json(&PromptRequest {
+            model: model.to_string(),
+            prompt: prompt.to_string(),
+        })
+        .send()
+        .await?;
+
+    if response.status() == 402 {
+        return Err("Insufficient balance - please top up your wallet".into());
+    }
+
+    let data: PromptResponse = response.json().await?;
+    Ok(data)
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let result = chat("What is Solana?", "gpt-3.5-turbo").await?;
+
+    println!("{}", result.text);
+    println!("Cost: ${:.6}", result.cost.total_cost);
+
+    Ok(())
+}
+```
+
+## Error Handling
+
+### HTTP Status Codes
+
+| Code | Meaning | Action |
+|------|---------|--------|
+| 200 | Success | Process response |
+| 400 | Bad Request | Check request parameters |
+| 401 | Unauthorized | Verify API key |
+| 402 | Payment Required | Top up wallet balance |
+| 404 | Not Found | Check endpoint URL |
+| 500 | Internal Error | Retry or contact support |
+
+### Error Response Format
+
+```json
+{
+  "error": "Insufficient balance: has $0.50, needs $1.00",
+  "code": "INSUFFICIENT_BALANCE",
+  "details": {
+    "currentBalance": 0.50,
+    "requiredBalance": 1.00,
+    "deficit": 0.50
+  }
+}
+```
+
+### Error Codes
+
+| Code | Description |
+|------|-------------|
+| `INVALID_API_KEY` | API key is missing or invalid |
+| `INVALID_MODEL` | Unsupported model specified |
+| `INSUFFICIENT_BALANCE` | Not enough USDC in wallet |
+| `PAYMENT_VERIFICATION_FAILED` | Payment signature invalid |
+| `RATE_LIMIT_EXCEEDED` | Too many requests |
+| `INTERNAL_ERROR` | Server error |
+
+## Best Practices
+
+### 1. Secure Your API Key
+
+```bash
+# Store in environment variables
+export CHAT402_API_KEY="pp_your_key_here"
+
+# Never commit to git
+echo "CHAT402_API_KEY=*" >> .gitenv
+```
+
+### 2. Handle Errors Gracefully
+
+```javascript
+async function safeChat(prompt) {
+  try {
+    return await chat(prompt);
+  } catch (error) {
+    if (error.response?.status === 402) {
+      // Show user-friendly message
+      return {
+        text: 'Please top up your Chat402 wallet to continue.',
+        error: true
+      };
+    }
+    throw error;
+  }
+}
+```
+
+### 3. Monitor Costs
+
+```javascript
+let totalCost = 0;
+
+async function trackedChat(prompt) {
+  const result = await chat(prompt);
+  totalCost += result.cost;
+
+  console.log(`Current session cost: $${totalCost.toFixed(6)}`);
+
+  return result;
+}
+```
+
+### 4. Use Appropriate Models
+
+| Model | Best For | Cost |
+|-------|----------|------|
+| gpt-3.5-turbo | General queries, fast responses | $0.0005/1K tokens |
+| gpt-4 | Complex reasoning, accuracy | $0.010/1K tokens |
+| claude-sonnet-4-5 | Long context, analysis | $0.003/1K tokens |
+| gemini-2.5-flash | Fast, cost-effective | $0.0001/1K tokens |
+| deepseek-chat | Code generation | $0.0001/1K tokens |
+
+### 5. Implement Retry Logic
+
+```javascript
+async function chatWithRetry(prompt, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await chat(prompt);
+    } catch (error) {
+      if (error.response?.status === 402) {
+        throw error; // Don't retry payment errors
+      }
+      if (i === maxRetries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+}
+```
+
+## Webhooks (Coming Soon)
+
+Get notified when:
+- Balance drops below threshold
+- Payments complete
+- API key usage spikes
+
+## Rate Limits
+
+Current limits (subject to change):
+- **Requests**: 100 per minute
+- **Concurrent**: 10 requests
+- **Burst**: 200 per minute
+
+Contact us for higher limits.
+
+## Support
+
+- **Documentation**: https://www.chat402.xyz/docs
+- **API Status**: https://status.chat402.xyz
+- **GitHub**: https://github.com/chat402
+- **Discord**: https://discord.gg/chat402
+- **Email**: support@chat402.xyz
+
+## Changelog
+
+### v1.0.0 (2025-10-28)
+- Initial release
+- Support for 10+ AI models
+- Dual-chain payment (Base + Solana)
+- Custodial wallet system
+- x402 payment protocol integration

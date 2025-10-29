@@ -1,68 +1,91 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Chat402 Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6366f1",
+    "light": "#8b8ff1",
+    "dark": "#4f46e5"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "User Guide",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "user-guide/getting-started",
+              "user-guide/funding-wallet",
+              "user-guide/using-chat"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Features",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "user-guide/api-keys",
+              "user-guide/private-keys",
+              "user-guide/supported-models"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Help",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "user-guide/troubleshooting",
+              "user-guide/faq"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Developer Guide",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Integration",
             "pages": [
-              "api-reference/introduction"
+              "developer/quickstart",
+              "developer/authentication",
+              "developer/making-requests"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Code Examples",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "developer/examples/nodejs",
+              "developer/examples/python",
+              "developer/examples/go",
+              "developer/examples/rust"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "developer/x402-protocol",
+              "developer/error-handling",
+              "developer/best-practices"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/prompt",
+              "api-reference/keys",
+              "api-reference/models"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "api-reference/schemas",
+              "api-reference/errors"
             ]
           }
         ]
@@ -71,14 +94,19 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Web App",
+          "href": "https://www.chat402.xyz",
+          "icon": "rocket"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitHub",
+          "href": "https://github.com/soebk/chat402",
+          "icon": "github"
+        },
+        {
+          "anchor": "Discord",
+          "href": "https://discord.gg/chat402",
+          "icon": "discord"
         }
       ]
     }
@@ -90,33 +118,30 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "API Status",
+        "href": "https://status.chat402.xyz"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Launch App",
+      "href": "https://www.chat402.xyz"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "cursor"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/chat402",
+      "github": "https://github.com/soebk/chat402",
+      "discord": "https://discord.gg/chat402"
     }
   }
 }

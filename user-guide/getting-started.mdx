@@ -1,0 +1,297 @@
+# Chat402 User Guide
+
+Welcome to Chat402 - the first pay-per-prompt AI platform built on crypto rails.
+
+## What is Chat402?
+
+Chat402 lets you access premium AI models (GPT-4, Claude, Gemini, etc.) by paying with USDC cryptocurrency. No subscriptions, no commitments - just pay for what you use.
+
+### Why Chat402?
+
+✅ **Pay-Per-Use**: Only pay for actual usage, not monthly subscriptions
+✅ **Access Premium Models**: GPT-4, Claude 4.5, Gemini, Grok, DeepSeek
+✅ **Crypto-Native**: Pay with USDC on Base or Solana
+✅ **Transparent Pricing**: See exact costs before each request
+✅ **Self-Custodial Option**: Use your own wallet or our custodial solution
+✅ **No KYC**: Just connect your wallet and start chatting
+
+## Getting Started
+
+### Step 1: Connect Your Wallet
+
+1. Visit [chat402.xyz](https://www.chat402.xyz)
+2. Click **"Connect Wallet"** in the sidebar
+3. Choose your wallet:
+   - **MetaMask** (Ethereum/Base)
+   - **Phantom** (Solana)
+4. Approve the connection
+
+**What happens**: Chat402 automatically creates two signless custodial wallets for you:
+- One on Ethereum (Base network) for USDC
+- One on Solana for USDC
+
+These wallets let you chat without signing every transaction!
+
+### Step 2: Fund Your Wallet
+
+You'll see two deposit addresses on the **API Keys** page:
+
+#### For Ethereum (Base):
+1. Copy your Ethereum deposit address
+2. Send USDC to this address **on Base network**
+3. Minimum: $1 USDC
+4. Confirmation time: ~1-2 minutes
+
+**Where to get USDC on Base:**
+- Bridge from Ethereum using [bridge.base.org](https://bridge.base.org)
+- Buy directly on Coinbase
+- Use [Uniswap on Base](https://app.uniswap.org)
+
+#### For Solana:
+1. Copy your Solana deposit address
+2. Send USDC to this address on Solana mainnet
+3. Minimum: $1 USDC
+4. Confirmation time: ~30 seconds
+
+**Where to get USDC on Solana:**
+- Use [Jupiter Exchange](https://jup.ag)
+- Buy on Phantom wallet
+- Bridge from other chains
+
+### Step 3: Start Chatting!
+
+1. Go to the **Chat** page
+2. Select an AI model from the tabs:
+   - **GPT-3.5**: Fast, cheap ($0.0005/1K tokens)
+   - **GPT-4**: Best for complex tasks ($0.010/1K tokens)
+   - **Claude 4.5**: Great for analysis ($0.003/1K tokens)
+   - **Gemini 2.5**: Fast and affordable ($0.0001/1K tokens)
+   - **Grok**: xAI's latest model ($0.005/1K tokens)
+   - **DeepSeek**: Best for code ($0.0001/1K tokens)
+3. Type your question
+4. Hit **Send**
+5. See the cost breakdown below each response
+
+## Understanding Costs
+
+### How Pricing Works
+
+AI models charge based on **tokens** (roughly 4 characters = 1 token):
+
+| Model | Input | Output | Example Cost |
+|-------|-------|--------|--------------|
+| GPT-3.5 Turbo | $0.0005/1K | $0.0005/1K | 100 words ≈ $0.0001 |
+| GPT-4 Turbo | $0.010/1K | $0.030/1K | 100 words ≈ $0.005 |
+| Claude 4.5 | $0.003/1K | $0.015/1K | 100 words ≈ $0.002 |
+| Gemini 2.5 | $0.0001/1K | $0.0003/1K | 100 words ≈ $0.00005 |
+
+### Example Costs
+
+- **Simple question**: "What's the capital of France?" → ~$0.0001
+- **Explanation**: "Explain blockchain" (200 words) → ~$0.001
+- **Essay**: "Write a 1000-word essay" → ~$0.01-0.05
+- **Code generation**: "Write a React component" → ~$0.005
+
+## Features
+
+### 💬 AI Chat
+
+Access multiple AI models in one interface:
+- Switch between models with one click
+- Upload images (GPT-4 Vision)
+- See real-time token usage
+- Copy responses with one click
+
+### 🔑 API Keys
+
+Generate API keys for programmatic access:
+1. Go to **API Keys** page
+2. Click **"Create New API Key"**
+3. Give it a name
+4. Copy and save the key (shown only once!)
+
+Each API key gets its own wallet - perfect for:
+- Different projects
+- Different budgets
+- Team members
+- AI agents
+
+### 💰 Balance Management
+
+Track your spending:
+- **Header**: Shows combined balance (⟠ ETH + ◎ SOL)
+- **API Keys Page**: Detailed balance per chain
+- **Top Up**: Click button to get deposit address
+- **Export Keys**: Get private keys to import elsewhere
+
+### 🔐 Private Key Export
+
+Your wallets, your keys:
+1. Go to **API Keys** page
+2. Click **"Export Private Keys"**
+3. Sign message to prove ownership
+4. Get private keys for both chains
+5. Import to MetaMask/Phantom if needed
+
+## Advanced Features
+
+### Using Your Own Wallet (x402 Protocol)
+
+For advanced users who want to pay directly from their wallet:
+
+```javascript
+// Sign payment proof
+const message = `PromptPort Payment\nRequest ID: ${requestId}\nAmount: ${amount}\nTimestamp: ${timestamp}`;
+const signature = await wallet.signMessage(message);
+
+// Send with payment proof
+await fetch('https://api.chat402.xyz/api/v1/prompt', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-4',
+    prompt: 'Your question',
+    payment: {
+      from: walletAddress,
+      amount: 1000, // USDC cents
+      signature,
+      timestamp,
+      requestId
+    }
+  })
+});
+```
+
+### Programmatic Access
+
+Use Chat402 in your apps:
+
+```bash
+curl -X POST https://api.chat402.xyz/api/v1/prompt \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gpt-3.5-turbo","prompt":"Hello!"}'
+```
+
+See the [Integration Guide](./INTEGRATION_GUIDE.md) for code examples in Python, JavaScript, Go, Rust, and more.
+
+## Security & Privacy
+
+### Your Data
+- ❌ **No data storage**: Prompts and responses are not logged
+- ❌ **No analytics**: We don't track what you ask
+- ✅ **Your keys**: You can export private keys anytime
+
+### Your Crypto
+- 🔐 **Encrypted**: Private keys stored with AES-256-GCM
+- 🔑 **Self-custody option**: Export keys to your own wallet
+- 💸 **Your balance**: Withdraw anytime by exporting keys
+
+## Troubleshooting
+
+### Balance not updating?
+1. Check transaction on block explorer:
+   - Base: [basescan.org](https://basescan.org)
+   - Solana: [solscan.io](https://solscan.io)
+2. Ensure you sent to correct address
+3. Verify correct network (Base for ETH, Solana mainnet)
+4. Wait 1-2 minutes for confirmations
+
+### Chat not working?
+1. ✅ Wallet connected?
+2. ✅ Balance > $0?
+3. ✅ Model selected?
+4. ⚠️ Check browser console for errors
+
+### API key not working?
+1. ✅ Copied the full key (starts with `pp_`)?
+2. ✅ Using correct endpoint: `https://api.chat402.xyz/api/v1`
+3. ✅ Authorization header: `Bearer YOUR_KEY`
+4. ✅ API key has balance?
+
+### Transaction failed?
+- **Insufficient balance**: Top up wallet
+- **Wrong network**: Use Base for ETH, Solana mainnet
+- **Wrong token**: Only USDC supported
+
+## FAQs
+
+**Q: Is this cheaper than ChatGPT Plus?**
+A: Depends on usage! If you use <100K tokens/month (~75 pages), Chat402 is cheaper. Heavy users might prefer subscriptions.
+
+**Q: Can I get a refund?**
+A: Yes! Export your private keys and withdraw USDC from the custodial wallet. Your crypto, your control.
+
+**Q: Which model is best?**
+A:
+- **Fast answers**: GPT-3.5 or Gemini
+- **Complex tasks**: GPT-4 or Claude
+- **Code**: DeepSeek or GPT-4
+- **Budget**: Gemini or DeepSeek
+
+**Q: Is my data private?**
+A: Yes. We don't log prompts or responses. AI providers (OpenAI, Anthropic) may have their own policies.
+
+**Q: Can I use this for my business?**
+A: Absolutely! Generate API keys and integrate via our REST API. See [Integration Guide](./INTEGRATION_GUIDE.md).
+
+**Q: What's x402?**
+A: HTTP 402 Payment Required - a standard for crypto-native payments. Pay per request, no subscriptions.
+
+**Q: Mobile support?**
+A: Yes! Connect with mobile wallets (MetaMask Mobile, Phantom Mobile). Fully responsive UI.
+
+**Q: Minimum deposit?**
+A: $1 USDC. But we recommend $10+ for regular usage.
+
+**Q: Maximum balance?**
+A: No limit! Top up as much as you need.
+
+## Getting Help
+
+- 📚 **Documentation**: [Full API docs](./INTEGRATION_GUIDE.md)
+- 💬 **Discord**: [discord.gg/chat402](https://discord.gg/chat402)
+- 🐛 **Bug reports**: [GitHub Issues](https://github.com/chat402/issues)
+- 📧 **Email**: support@chat402.xyz
+- 🔍 **Status**: [status.chat402.xyz](https://status.chat402.xyz)
+
+## Tips & Tricks
+
+### Save Money
+1. Use GPT-3.5 for simple queries
+2. Use Gemini/DeepSeek for cost-effective responses
+3. Keep prompts concise
+4. Switch models based on task complexity
+
+### Get Better Responses
+1. Be specific in your prompts
+2. Provide context upfront
+3. Ask follow-up questions in same chat
+4. Use Claude for long-form content
+5. Use GPT-4 for reasoning tasks
+
+### Power User Tips
+1. Generate multiple API keys for different projects
+2. Use images with GPT-4 Vision
+3. Export chat history
+4. Monitor costs per conversation
+5. Set up programmatic access for automation
+
+## Roadmap
+
+Coming soon:
+- 🎯 **Fine-tuned models**: Custom models for your use case
+- 📊 **Usage analytics**: Dashboard for cost tracking
+- 🔔 **Webhooks**: Get notified of events
+- 🤖 **AI agents**: Deploy autonomous agents
+- 🌐 **More models**: Llama 3, Mistral, and more
+- 💱 **More tokens**: Pay with ETH, SOL, USDT
+
+---
+
+**Built with ❤️ for the crypto-native AI future**
+
+Follow us: [Twitter](https://twitter.com/chat402) | [GitHub](https://github.com/chat402)

@@ -1,97 +1,115 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: Welcome to Chat402
+description: The first LLM API gateway built for x402. Pay-per-prompt in USDC on Base or Solana.
 ---
 
-## Setting up
+## What is Chat402?
 
-Get your documentation site up and running in minutes.
+Chat402 is the first pay-per-prompt AI platform built on crypto rails. Access premium AI models (GPT-4, Claude, Gemini, Grok, DeepSeek) by paying with USDC cryptocurrency on Base or Solana networks.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
+<CardGroup cols={2}>
   <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
+    title="User Guide"
+    icon="user"
+    href="/user-guide/getting-started"
   >
-    Edit your docs locally and preview them in real time.
+    Learn how to get started with Chat402, fund your wallet, and chat with AI
   </Card>
   <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
+    title="Developer Guide"
+    icon="code"
+    href="/developer/quickstart"
   >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+    Integrate Chat402 into your applications with our REST API
   </Card>
   <Card
-    title="API documentation"
-    icon="terminal"
+    title="API Reference"
+    icon="book"
     href="/api-reference/introduction"
   >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+    Complete API documentation with endpoints and schemas
   </Card>
   <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
+    title="Web App"
+    icon="rocket"
+    href="https://www.chat402.xyz"
   >
-    Add sample code to demonstrate how to use your product.
+    Try Chat402 in your browser right now
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+</CardGroup>
 
-## Need inspiration?
+## Why Chat402?
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<AccordionGroup>
+  <Accordion title="Pay-Per-Use" icon="money-bill">
+    Only pay for what you use. No monthly subscriptions, no commitments. Start with as little as $1 USDC.
+  </Accordion>
+
+  <Accordion title="Instant Payments" icon="bolt">
+    Powered by x402 protocol. Pay automatically with USDC on Base (Ethereum L2) or Solana. Sub-second confirmations.
+  </Accordion>
+
+  <Accordion title="Self-Custodial" icon="shield">
+    Your keys, your crypto. Use custodial API keys for convenience or pay directly from your own wallet.
+  </Accordion>
+
+  <Accordion title="Multi-Model Access" icon="layer-group">
+    Access OpenAI (GPT-3.5, GPT-4), Anthropic (Claude 4.5), Google (Gemini), xAI (Grok), and DeepSeek through one unified API.
+  </Accordion>
+</AccordionGroup>
+
+## Quick Start
+
+<Steps>
+  <Step title="Connect Wallet">
+    Visit [chat402.xyz](https://www.chat402.xyz) and connect your MetaMask or Phantom wallet. Custodial wallets are automatically created for you.
+  </Step>
+
+  <Step title="Fund Your Wallet">
+    Send USDC to your deposit address on Base or Solana. Deposits confirm in 1-2 minutes.
+  </Step>
+
+  <Step title="Start Chatting">
+    Select an AI model and start chatting! Each request shows the exact cost in real-time.
+  </Step>
+</Steps>
+
+## Supported Models
+
+| Model | Provider | Price (per 1K tokens) | Best For |
+|-------|----------|----------------------|----------|
+| GPT-3.5 Turbo | OpenAI | $0.0005 | Fast, general-purpose |
+| GPT-4 Turbo | OpenAI | $0.010 | Complex reasoning |
+| Claude 4.5 Sonnet | Anthropic | $0.003 | Analysis, long-form content |
+| Gemini 2.5 Flash | Google | $0.0001 | Cost-effective, fast |
+| Grok | xAI | $0.005 | Latest from xAI |
+| DeepSeek Chat | DeepSeek | $0.0001 | Code generation |
+
+## Payment Networks
+
+<CardGroup cols={2}>
+  <Card title="Base (Ethereum L2)" icon="ethereum">
+    - Low gas fees (~$0.01)
+    - Coinbase-backed L2
+    - 1-2 minute confirmations
+  </Card>
+  <Card title="Solana">
+    - Ultra-low fees (~$0.0001)
+    - Fastest transactions
+    - ~30 second confirmations
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="Discord Community" icon="discord" href="https://discord.gg/chat402">
+    Join our community for support and updates
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/soebk/chat402">
+    View source code and report issues
+  </Card>
+  <Card title="Email Support" icon="envelope" href="mailto:support@chat402.xyz">
+    Get direct support from our team
+  </Card>
+</CardGroup>
