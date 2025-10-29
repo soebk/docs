@@ -1,0 +1,50 @@
+---
+title: Python
+description: Chat402 examples for Python
+---
+
+## Installation
+
+```bash
+pip install requests
+```
+
+## Basic Example
+
+```python
+import requests
+import os
+
+API_KEY = os.getenv('CHAT402_API_KEY')
+API_URL = 'https://api.chat402.xyz/api/v1'
+
+def chat(prompt: str, model: str = 'gpt-3.5-turbo'):
+    response = requests.post(
+        f'{API_URL}/prompt',
+        headers={
+            'Authorization': f'Bearer {API_KEY}',
+            'Content-Type': 'application/json'
+        },
+        json={
+            'model': model,
+            'prompt': prompt
+        }
+    )
+
+    if response.status_code == 402:
+        raise Exception('Insufficient balance')
+
+    response.raise_for_status()
+    data = response.json()
+
+    return {
+        'text': data['text'],
+        'cost': data['cost']['totalCost'],
+        'tokens': data['usage']['totalTokens']
+    }
+
+# Usage
+result = chat('Explain machine learning')
+print(result['text'])
+print(f"Cost: ${result['cost']:.6f}")
+```

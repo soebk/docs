@@ -1,0 +1,85 @@
+---
+title: Go
+description: Chat402 examples for Go
+---
+
+## Basic Example
+
+```go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "net/http"
+    "os"
+)
+
+type PromptRequest struct {
+    Model  string `json:"model"`
+    Prompt string `json:"prompt"`
+}
+
+type PromptResponse struct {
+    Success bool   `json:"success"`
+    Text    string `json:"text"`
+    Usage   struct {
+        TotalTokens int `json:"totalTokens"`
+    } `json:"usage"`
+    Cost struct {
+        TotalCost float64 `json:"totalCost"`
+    } `json:"cost"`
+}
+
+func chat(prompt string, model string) (*PromptResponse, error) {
+    apiKey := os.Getenv("CHAT402_API_KEY")
+    apiURL := "https://api.chat402.xyz/api/v1"
+
+    reqBody := PromptRequest{
+        Model:  model,
+        Prompt: prompt,
+    }
+
+    jsonData, err := json.Marshal(reqBody)
+    if err != nil {
+        return nil, err
+    }
+
+    req, err := http.NewRequest("POST", apiURL+"/prompt", bytes.NewBuffer(jsonData))
+    if err != nil {
+        return nil, err
+    }
+
+    req.Header.Set("Authorization", "Bearer "+apiKey)
+    req.Header.Set("Content-Type", "application/json")
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode == 402 {
+        return nil, fmt.Errorf("insufficient balance")
+    }
+
+    var result PromptResponse
+    if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+        return nil, err
+    }
+
+    return &result, nil
+}
+
+func main() {
+    result, err := chat("What is Ethereum?", "gpt-3.5-turbo")
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println(result.Text)
+    fmt.Printf("Cost: $%.6f\n", result.Cost.TotalCost)
+}
+```

@@ -1,0 +1,26 @@
+---
+title: API Keys
+description: Generate and manage API keys for programmatic access
+---
+
+## API Key Management
+
+Each API key gets its own wallet for isolated budgets.
+
+### Creating an API Key
+
+1. Go to **API Keys** page
+2. Click **"Create New API Key"**
+3. Give it a name
+4. Copy and save the key (shown only once!)
+
+### Using Your API Key
+
+```bash
+curl -X POST https://api.chat402.xyz/api/v1/prompt \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gpt-3.5-turbo","prompt":"Hello!"}'
+```
+
+See the [Developer Guide](/developer/quickstart) for more examples.

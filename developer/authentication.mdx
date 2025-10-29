@@ -1,0 +1,37 @@
+---
+title: Authentication
+description: How to authenticate with the Chat402 API
+---
+
+## API Key Authentication
+
+All API requests require an API key in the Authorization header.
+
+### Getting Your API Key
+
+1. Visit [chat402.xyz](https://www.chat402.xyz)
+2. Connect your wallet
+3. Go to **API Keys** page
+4. Click **"Create New API Key"**
+5. Copy and save the key (starts with `pp_`)
+
+### Using Your API Key
+
+Include the API key in the `Authorization` header:
+
+```bash
+Authorization: Bearer pp_1234567890abcdef...
+```
+
+### Example Request
+
+```bash
+curl -X POST https://api.chat402.xyz/api/v1/prompt \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gpt-3.5-turbo","prompt":"Hello!"}'
+```
+
+<Warning>
+Keep your API key secret! Anyone with your key can use your balance.
+</Warning>

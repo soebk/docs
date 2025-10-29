@@ -1,0 +1,53 @@
+---
+title: Error Handling
+description: Handle API errors properly
+---
+
+## HTTP Status Codes
+
+| Code | Meaning | Action |
+|------|---------|--------|
+| 200 | Success | Process response |
+| 400 | Bad Request | Check request parameters |
+| 401 | Unauthorized | Verify API key |
+| 402 | Payment Required | Top up wallet balance |
+| 404 | Not Found | Check endpoint URL |
+| 500 | Internal Error | Retry or contact support |
+
+## Error Response Format
+
+```json
+{
+  "error": "Insufficient balance: has $0.50, needs $1.00",
+  "code": "INSUFFICIENT_BALANCE",
+  "details": {
+    "currentBalance": 0.50,
+    "requiredBalance": 1.00,
+    "deficit": 0.50
+  }
+}
+```
+
+## Common Error Codes
+
+- `INVALID_API_KEY` - API key is missing or invalid
+- `INVALID_MODEL` - Unsupported model specified
+- `INSUFFICIENT_BALANCE` - Not enough USDC in wallet
+- `PAYMENT_VERIFICATION_FAILED` - Payment signature invalid
+- `RATE_LIMIT_EXCEEDED` - Too many requests
+- `INTERNAL_ERROR` - Server error
+
+## Example Error Handling
+
+```javascript
+try {
+  const result = await chat(prompt);
+  console.log(result.text);
+} catch (error) {
+  if (error.response?.status === 402) {
+    console.error('Please top up your wallet');
+  } else {
+    console.error('Error:', error.message);
+  }
+}
+```

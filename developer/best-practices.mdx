@@ -1,0 +1,68 @@
+---
+title: Best Practices
+description: Tips for integrating Chat402
+---
+
+## Security
+
+### Protect Your API Key
+
+```bash
+# Store in environment variables
+export CHAT402_API_KEY="pp_your_key_here"
+
+# Never commit to git
+echo "CHAT402_API_KEY=*" >> .gitignore
+```
+
+## Cost Optimization
+
+### Choose the Right Model
+
+| Model | Use Case | Cost |
+|-------|----------|------|
+| GPT-3.5 or Gemini | Simple queries | Lowest |
+| Claude or GPT-4 | Complex tasks | Higher |
+| DeepSeek | Code generation | Low |
+
+### Monitor Spending
+
+```javascript
+let totalCost = 0;
+
+async function trackedChat(prompt) {
+  const result = await chat(prompt);
+  totalCost += result.cost;
+  console.log(`Session cost: $${totalCost.toFixed(6)}`);
+  return result;
+}
+```
+
+## Reliability
+
+### Implement Retry Logic
+
+```javascript
+async function chatWithRetry(prompt, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await chat(prompt);
+    } catch (error) {
+      if (error.response?.status === 402) {
+        throw error; // Don't retry payment errors
+      }
+      if (i === maxRetries - 1) throw error;
+      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+    }
+  }
+}
+```
+
+## Rate Limits
+
+Current limits:
+- **Requests**: 100 per minute
+- **Concurrent**: 10 requests  
+- **Burst**: 200 per minute
+
+Contact us for higher limits.

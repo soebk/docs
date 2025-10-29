@@ -1,0 +1,80 @@
+---
+title: Rust
+description: Chat402 examples for Rust
+---
+
+## Installation
+
+```toml
+[dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+```
+
+## Basic Example
+
+```rust
+use reqwest;
+use serde::{Deserialize, Serialize};
+use std::env;
+
+#[derive(Serialize)]
+struct PromptRequest {
+    model: String,
+    prompt: String,
+}
+
+#[derive(Deserialize)]
+struct PromptResponse {
+    success: bool,
+    text: String,
+    usage: TokenUsage,
+    cost: CostBreakdown,
+}
+
+#[derive(Deserialize)]
+struct TokenUsage {
+    #[serde(rename = "totalTokens")]
+    total_tokens: i32,
+}
+
+#[derive(Deserialize)]
+struct CostBreakdown {
+    #[serde(rename = "totalCost")]
+    total_cost: f64,
+}
+
+async fn chat(prompt: &str, model: &str) -> Result<PromptResponse, Box<dyn std::error::Error>> {
+    let api_key = env::var("CHAT402_API_KEY")?;
+    let api_url = "https://api.chat402.xyz/api/v1";
+
+    let client = reqwest::Client::new();
+    let response = client
+        .post(format!("{}/prompt", api_url))
+        .header("Authorization", format!("Bearer {}", api_key))
+        .json(&PromptRequest {
+            model: model.to_string(),
+            prompt: prompt.to_string(),
+        })
+        .send()
+        .await?;
+
+    if response.status() == 402 {
+        return Err("Insufficient balance".into());
+    }
+
+    let data: PromptResponse = response.json().await?;
+    Ok(data)
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let result = chat("What is Solana?", "gpt-3.5-turbo").await?;
+
+    println!("{}", result.text);
+    println!("Cost: ${:.6}", result.cost.total_cost);
+
+    Ok(())
+}
+```
