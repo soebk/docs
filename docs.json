@@ -80,7 +80,7 @@
         },
         {
           "anchor": "GitHub",
-          "href": "https://github.com/soebk/Chat402-Docs",
+          "href": "https://github.com/soebk/OpenSourceChat402",
           "icon": "github"
         },
         {
@@ -125,7 +125,7 @@
   "footer": {
     "socials": {
       "x": "https://x.com/Chatx402",
-      "github": "https://github.com/soebk/Chat402-Docs",
+      "github": "https://github.com/soebk/OpenSourceChat402",
       "telegram": "https://t.me/chatx402"
     }
   }
