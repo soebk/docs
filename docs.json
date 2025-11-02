@@ -79,11 +79,6 @@
           "icon": "rocket"
         },
         {
-          "anchor": "GitHub",
-          "href": "https://github.com/soebk/OpenSourceChat402",
-          "icon": "github"
-        },
-        {
           "anchor": "Telegram",
           "href": "https://t.me/chatx402",
           "icon": "telegram"
