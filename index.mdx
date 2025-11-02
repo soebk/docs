@@ -1,11 +1,13 @@
 ---
 title: Welcome to Chat402
-description: The first LLM API gateway built for x402. Pay-per-prompt in USDC on Base or Solana.
+description: The first LLM API gateway built for x402. Pay-per-prompt in USDC on Solana.
 ---
 
 ## What is Chat402?
 
-Chat402 is the first pay-per-prompt AI platform built on crypto rails. Access premium AI models (GPT-4, Claude, Gemini, Grok, DeepSeek) by paying with USDC cryptocurrency on Base or Solana networks.
+The first LLM API gateway built for x402. Pay-per-prompt in USDC on Solana.
+
+Access GPT-4, Claude, Gemini, Grok, DeepSeek and more. No subscriptions, just pay for what you use.
 
 <CardGroup cols={2}>
   <Card
@@ -13,28 +15,14 @@ Chat402 is the first pay-per-prompt AI platform built on crypto rails. Access pr
     icon="user"
     href="/user-guide/getting-started"
   >
-    Learn how to get started with Chat402, fund your wallet, and chat with AI
+    Learn how to use Chat402, fund your wallet, and start chatting with AI models.
   </Card>
   <Card
-    title="Developer Guide"
-    icon="code"
+    title="Integration Guide"
+    icon="wrench"
     href="/developer/quickstart"
   >
-    Integrate Chat402 into your applications with our REST API
-  </Card>
-  <Card
-    title="API Reference"
-    icon="book"
-    href="/api-reference/introduction"
-  >
-    Complete API documentation with endpoints and schemas
-  </Card>
-  <Card
-    title="Web App"
-    icon="rocket"
-    href="https://www.chat402.xyz"
-  >
-    Try Chat402 in your browser right now
+    Code examples in Python, JavaScript, Go, Rust, and more. Get started in minutes.
   </Card>
 </CardGroup>
 
@@ -60,56 +48,110 @@ Chat402 is the first pay-per-prompt AI platform built on crypto rails. Access pr
 
 ## Quick Start
 
+Get up and running in 3 steps:
+
 <Steps>
-  <Step title="Connect Wallet">
-    Visit [chat402.xyz](https://www.chat402.xyz) and connect your MetaMask or Phantom wallet. Custodial wallets are automatically created for you.
+  <Step title="Generate API Key">
+    Connect your wallet, custodial wallets are auto-created. Generate an API key on the API Keys page.
   </Step>
 
   <Step title="Fund Your Wallet">
-    Send USDC to your deposit address on Base or Solana. Deposits confirm in 1-2 minutes.
+    Send USDC to your deposit address on Solana. Minimum: $1 USDC.
   </Step>
 
-  <Step title="Start Chatting">
-    Select an AI model and start chatting! Each request shows the exact cost in real-time.
+  <Step title="Make Your First Request">
+    Send a POST request to the API or use the web chat interface.
   </Step>
 </Steps>
 
+### Example cURL Request
+
+```bash
+curl -X POST https://api.chat402.xyz/api/v1/prompt \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-3.5-turbo",
+    "prompt": "Explain blockchain in simple terms"
+  }'
+```
+
+### Example JavaScript
+
+```javascript
+const response = await fetch('https://api.chat402.xyz/api/v1/prompt', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-4',
+    prompt: 'Write a haiku about AI'
+  })
+});
+
+const data = await response.json();
+console.log(data.text);
+```
+
 ## Supported Models
 
-| Model | Provider | Price (per 1K tokens) | Best For |
-|-------|----------|----------------------|----------|
-| GPT-3.5 Turbo | OpenAI | $0.0005 | Fast, general-purpose |
-| GPT-4 Turbo | OpenAI | $0.010 | Complex reasoning |
-| Claude 4.5 Sonnet | Anthropic | $0.003 | Analysis, long-form content |
-| Gemini 2.5 Flash | Google | $0.0001 | Cost-effective, fast |
-| Grok | xAI | $0.005 | Latest from xAI |
-| DeepSeek Chat | DeepSeek | $0.0001 | Code generation |
-
-## Payment Networks
+Access 10+ premium AI models through one unified API:
 
 <CardGroup cols={2}>
-  <Card title="Base (Ethereum L2)" icon="ethereum">
-    - Low gas fees (~$0.01)
-    - Coinbase-backed L2
-    - 1-2 minute confirmations
+  <Card title="GPT-3.5 Turbo" icon="message">
+    Fast, general-purpose
+
+    **$0.0005/1K tokens**
   </Card>
-  <Card title="Solana">
-    - Ultra-low fees (~$0.0001)
-    - Fastest transactions
-    - ~30 second confirmations
+  <Card title="GPT-4 Turbo" icon="brain">
+    Advanced reasoning
+
+    **$0.010/1K tokens**
+  </Card>
+  <Card title="Claude 4.5 Sonnet" icon="file-lines">
+    Best for analysis
+
+    **$0.003/1K tokens**
+  </Card>
+  <Card title="Gemini 2.5 Flash" icon="bolt">
+    Fast & affordable
+
+    **$0.0001/1K tokens**
+  </Card>
+  <Card title="Grok" icon="sparkles">
+    xAI's latest
+
+    **$0.005/1K tokens**
+  </Card>
+  <Card title="DeepSeek Chat" icon="code">
+    Best for code
+
+    **$0.0001/1K tokens**
   </Card>
 </CardGroup>
 
-## Need Help?
+## Payment Networks
+
+Pay with USDC on your preferred network:
+
+<Card title="Solana" icon="circle">
+  - Ultra-low fees (~$0.0001)
+  - Fastest transactions
+  - ~30 second confirmations
+</Card>
+
+## Additional Resources
 
 <CardGroup cols={3}>
-  <Card title="Telegram" icon="telegram" href="https://t.me/chatx402">
-    Join our community for support and updates
+  <Card title="GitHub Repository" icon="github" href="https://github.com/soebk/OpenSourceChat402">
+    View source code and contribute
   </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/soebk/chat402">
-    View source code and report issues
+  <Card title="Documentation" icon="book" href="https://docs.chat402.xyz">
+    Full API docs and guides
   </Card>
-  <Card title="Email Support" icon="envelope" href="mailto:support@chat402.xyz">
-    Get direct support from our team
+  <Card title="Telegram Community" icon="telegram" href="https://t.me/chatx402">
+    Join our community for support
   </Card>
 </CardGroup>

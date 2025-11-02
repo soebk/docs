@@ -101,12 +101,6 @@
     "dark": "/logo/dark.svg"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "API Status",
-        "href": "https://status.chat402.xyz"
-      }
-    ],
     "primary": {
       "type": "button",
       "label": "Launch App",
