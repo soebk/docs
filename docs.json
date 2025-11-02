@@ -70,27 +70,6 @@
           }
         ]
       },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "Endpoints",
-            "pages": [
-              "api-reference/introduction",
-              "api-reference/prompt",
-              "api-reference/keys",
-              "api-reference/models"
-            ]
-          },
-          {
-            "group": "Resources",
-            "pages": [
-              "api-reference/schemas",
-              "api-reference/errors"
-            ]
-          }
-        ]
-      }
     ],
     "global": {
       "anchors": [
@@ -101,13 +80,18 @@
         },
         {
           "anchor": "GitHub",
-          "href": "https://github.com/soebk/chat402",
+          "href": "https://github.com/soebk/Chat402-Docs",
           "icon": "github"
         },
         {
-          "anchor": "Discord",
-          "href": "https://discord.gg/chat402",
-          "icon": "discord"
+          "anchor": "Telegram",
+          "href": "https://t.me/chatx402",
+          "icon": "telegram"
+        },
+        {
+          "anchor": "X (Twitter)",
+          "href": "https://x.com/Chatx402",
+          "icon": "x-twitter"
         }
       ]
     }
@@ -140,9 +124,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/chat402",
-      "github": "https://github.com/soebk/chat402",
-      "discord": "https://discord.gg/chat402"
+      "x": "https://x.com/Chatx402",
+      "github": "https://github.com/soebk/Chat402-Docs",
+      "telegram": "https://t.me/chatx402"
     }
   }
 }
