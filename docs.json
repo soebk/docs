@@ -69,7 +69,7 @@
             ]
           }
         ]
-      },
+      }
     ],
     "global": {
       "anchors": [
@@ -79,8 +79,13 @@
           "icon": "rocket"
         },
         {
+          "anchor": "GitHub",
+          "href": "https://github.com/ebktech/chat402",
+          "icon": "github"
+        },
+        {
           "anchor": "Telegram",
-          "href": "https://t.me/chatx402",
+          "href": "https://t.me/chat402",
           "icon": "telegram"
         },
         {
@@ -102,6 +107,12 @@
       "href": "https://www.chat402.xyz"
     }
   },
+  "topbar": {
+    "links": [
+      { "name": "GitHub", "url": "https://github.com/ebktech/chat402" },
+      { "name": "Telegram", "url": "https://t.me/chat402" }
+    ]
+  },
   "contextual": {
     "options": [
       "copy",
@@ -114,8 +125,8 @@
   "footer": {
     "socials": {
       "x": "https://x.com/Chatx402",
-      "github": "https://github.com/soebk/Chat402-Docs",
-      "telegram": "https://t.me/chatx402"
+      "github": "https://github.com/ebktech/chat402",
+      "telegram": "https://t.me/chat402"
     }
   }
 }
