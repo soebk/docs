@@ -10,7 +10,7 @@ Chat402 lets you access premium AI models (GPT-4, Claude, Gemini, etc.) by payin
 
 ✅ **Pay-Per-Use**: Only pay for actual usage, not monthly subscriptions
 ✅ **Access Premium Models**: GPT-4, Claude 4.5, Gemini, Grok, DeepSeek
-✅ **Crypto-Native**: Pay with USDC on Base or Solana
+✅ **Crypto-Native**: Pay with USDC on Solana
 ✅ **Transparent Pricing**: See exact costs before each request
 ✅ **Self-Custodial Option**: Use your own wallet or our custodial solution
 ✅ **No KYC**: Just connect your wallet and start chatting
@@ -22,32 +22,18 @@ Chat402 lets you access premium AI models (GPT-4, Claude, Gemini, etc.) by payin
 1. Visit [chat402.xyz](https://www.chat402.xyz)
 2. Click **"Connect Wallet"** in the sidebar
 3. Choose your wallet:
-   - **MetaMask** (Ethereum/Base)
    - **Phantom** (Solana)
+   - **Solflare** (Solana)
 4. Approve the connection
 
-**What happens**: Chat402 automatically creates two signless custodial wallets for you:
-- One on Ethereum (Base network) for USDC
-- One on Solana for USDC
+**What happens**: Chat402 automatically creates a signless custodial wallet for you on Solana for USDC.
 
-These wallets let you chat without signing every transaction!
+This wallet lets you chat without signing every transaction!
 
 ### Step 2: Fund Your Wallet
 
-You'll see two deposit addresses on the **API Keys** page:
+You'll see your deposit address on the **API Keys** page:
 
-#### For Ethereum (Base):
-1. Copy your Ethereum deposit address
-2. Send USDC to this address **on Base network**
-3. Minimum: $1 USDC
-4. Confirmation time: ~1-2 minutes
-
-**Where to get USDC on Base:**
-- Bridge from Ethereum using [bridge.base.org](https://bridge.base.org)
-- Buy directly on Coinbase
-- Use [Uniswap on Base](https://app.uniswap.org)
-
-#### For Solana:
 1. Copy your Solana deposit address
 2. Send USDC to this address on Solana mainnet
 3. Minimum: $1 USDC
@@ -56,7 +42,7 @@ You'll see two deposit addresses on the **API Keys** page:
 **Where to get USDC on Solana:**
 - Use [Jupiter Exchange](https://jup.ag)
 - Buy on Phantom wallet
-- Bridge from other chains
+- Bridge from other chains using [Portal Bridge](https://portalbridge.com)
 
 ### Step 3: Start Chatting!
 
@@ -119,8 +105,8 @@ Each API key gets its own wallet - perfect for:
 ### 💰 Balance Management
 
 Track your spending:
-- **Header**: Shows combined balance (⟠ ETH + ◎ SOL)
-- **API Keys Page**: Detailed balance per chain
+- **Header**: Shows your Solana USDC balance (◎ SOL)
+- **API Keys Page**: Detailed balance and deposit address
 - **Top Up**: Click button to get deposit address
 - **Export Keys**: Get private keys to import elsewhere
 
@@ -193,12 +179,10 @@ See the [Integration Guide](./INTEGRATION_GUIDE.md) for code examples in Python,
 ## Troubleshooting
 
 ### Balance not updating?
-1. Check transaction on block explorer:
-   - Base: [basescan.org](https://basescan.org)
-   - Solana: [solscan.io](https://solscan.io)
+1. Check transaction on Solana block explorer: [solscan.io](https://solscan.io)
 2. Ensure you sent to correct address
-3. Verify correct network (Base for ETH, Solana mainnet)
-4. Wait 1-2 minutes for confirmations
+3. Verify correct network (Solana mainnet)
+4. Wait 30-60 seconds for confirmations
 
 ### Chat not working?
 1. ✅ Wallet connected?
@@ -214,7 +198,7 @@ See the [Integration Guide](./INTEGRATION_GUIDE.md) for code examples in Python,
 
 ### Transaction failed?
 - **Insufficient balance**: Top up wallet
-- **Wrong network**: Use Base for ETH, Solana mainnet
+- **Wrong network**: Use Solana mainnet
 - **Wrong token**: Only USDC supported
 
 ## FAQs
@@ -252,9 +236,9 @@ A: No limit! Top up as much as you need.
 
 ## Getting Help
 
-- 📚 **Documentation**: [Full API docs](./INTEGRATION_GUIDE.md)
+- 📚 **Documentation**: [docs.chat402.xyz](https://docs.chat402.xyz)
 - 💬 **Telegram**: [t.me/chatx402](https://t.me/chatx402)
-- 🐛 **Bug reports**: [GitHub Issues](https://github.com/chat402/issues)
+- 🐛 **Bug reports**: [GitHub Issues](https://github.com/soebk/OpenSourceChat402/issues)
 - 📧 **Email**: support@chat402.xyz
 - 🔍 **Status**: [status.chat402.xyz](https://status.chat402.xyz)
 
@@ -294,4 +278,4 @@ Coming soon:
 
 **Built with ❤️ for the crypto-native AI future**
 
-Follow us: [Twitter](https://twitter.com/chat402) | [GitHub](https://github.com/chat402)
+Follow us: [X (Twitter)](https://x.com/Chatx402) | [GitHub](https://github.com/soebk/OpenSourceChat402) | [Telegram](https://t.me/chatx402)
